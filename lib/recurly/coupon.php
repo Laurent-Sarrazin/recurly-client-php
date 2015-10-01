@@ -49,6 +49,10 @@ class Recurly_Coupon extends Recurly_Resource
     }
   }
 
+  public function update() {
+    $this->_save(Recurly_Client::PUT, $this->uri());
+  }
+
   public function delete() {
     return Recurly_Base::_delete($this->uri(), $this->_client);
   }

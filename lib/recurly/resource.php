@@ -168,6 +168,7 @@ abstract class Recurly_Resource extends Recurly_Base
          $nested && in_array($attr, $requiredAttributes) ||
          (is_array($this->_values[$attr]) || $this->_values[$attr] instanceof ArrayAccess))
       {
+
         $attributes[$attr] = $this->$attr;
       }
 
