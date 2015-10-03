@@ -18,7 +18,7 @@ class Recurly_Coupon extends Recurly_Resource
       'duration', 'temporal_unit', 'temporal_amount',
       'max_redemptions','applies_to_all_plans','discount_percent','discount_in_cents','plan_codes',
       'hosted_description','invoice_description', 'applies_to_non_plan_charges', 'redemption_resource',
-      'max_redemptions_per_account'
+      'max_redemptions_per_account', 'coupon_type', 'unique_code_template'
     );
     Recurly_Coupon::$_nestedAttributes = array();
   }
@@ -54,6 +54,15 @@ class Recurly_Coupon extends Recurly_Resource
   }
   public static function deleteCoupon($couponCode, $client = null) {
     return Recurly_Base::_delete(Recurly_Coupon::uriForCoupon($couponCode), $client);
+  }
+
+  public function generate($amount) {
+    $doc = $this->createDocument();
+
+    $root = $doc->appendChild($doc->createElement($this->getNodeName()));
+    $root->appendChild($doc->createElement('number_of_unique_codes', $amount));
+
+    return self::_post($this->uri() . '/generate', $this->renderXML($doc), $this->_client);
   }
 
   protected function uri() {
