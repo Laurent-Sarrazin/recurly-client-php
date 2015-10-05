@@ -3,6 +3,7 @@
 class Recurly_Coupon extends Recurly_Resource
 {
   protected static $_writeableAttributes;
+  protected static $_updatableAttributes;
   protected static $_nestedAttributes;
   protected $_redeemUrl;
 
@@ -21,6 +22,9 @@ class Recurly_Coupon extends Recurly_Resource
       'max_redemptions_per_account'
     );
     Recurly_Coupon::$_nestedAttributes = array();
+    Recurly_Coupon::$_updatableAttributes = array('name', 'max_redemptions',
+      'max_redemptions_per_account', 'hosted_description', 'invoice_description', 'redeem_by_date'
+    );
   }
 
   public static function get($couponCode, $client = null) {
@@ -50,11 +54,11 @@ class Recurly_Coupon extends Recurly_Resource
   }
 
   public function update() {
-    $this->_save(Recurly_Client::PUT, $this->uri());
+    $this->_save(Recurly_Client::PUT, $this->uri(), $this->createUpdateXML());
   }
 
   public function restore() {
-    $this->_save(Recurly_Client::PUT, $this->uri() . '/restore');
+    $this->_save(Recurly_Client::PUT, $this->uri() . '/restore', $this->createUpdateXML());
   }
 
   public function delete() {
@@ -62,6 +66,17 @@ class Recurly_Coupon extends Recurly_Resource
   }
   public static function deleteCoupon($couponCode, $client = null) {
     return Recurly_Base::_delete(Recurly_Coupon::uriForCoupon($couponCode), $client);
+  }
+
+  protected function createUpdateXML() {
+    $doc = $this->createDocument();
+
+    $root = $doc->appendChild($doc->createElement($this->getNodeName()));
+    foreach ($this->getUpdatableAttributes() as $attr) {
+      $root->appendChild($doc->createElement($attr, $this->$attr));
+    }
+
+    return $this->renderXML($doc);
   }
 
   protected function uri() {
@@ -79,6 +94,9 @@ class Recurly_Coupon extends Recurly_Resource
   }
   protected function getWriteableAttributes() {
     return Recurly_Coupon::$_writeableAttributes;
+  }
+  protected function getUpdatableAttributes() {
+    return Recurly_Coupon::$_updatableAttributes;
   }
   protected function getRequiredAttributes() {
     return array();

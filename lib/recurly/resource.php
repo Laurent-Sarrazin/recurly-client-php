@@ -73,14 +73,18 @@ abstract class Recurly_Resource extends Recurly_Base
     return $this;
   }
 
-  protected function _save($method, $uri)
+  protected function _save($method, $uri, $data = null)
   {
     $this->_errors = array(); // reset errors
 
     if (is_null($this->_client))
       $this->_client = new Recurly_Client();
 
-    $response = $this->_client->request($method, $uri, $this->xml());
+    if (is_null($data)) {
+      $data = $this->xml();
+    }
+
+    $response = $this->_client->request($method, $uri, $data);
     $response->assertValidResponse();
     if (isset($response->body)) {
       Recurly_Resource::__parseXmlToUpdateObject($response->body);
@@ -165,7 +169,8 @@ abstract class Recurly_Resource extends Recurly_Base
       if(!array_key_exists($attr, $this->_values)) { continue; }
 
       if(isset($this->_unsavedKeys[$attr]) ||
-         $nested && in_array($attr, $requiredAttributes))
+         $nested && in_array($attr, $requiredAttributes) ||
+         (is_array($this->_values[$attr]) || $this->_values[$attr] instanceof ArrayAccess))
       {
         $attributes[$attr] = $this->$attr;
       }
