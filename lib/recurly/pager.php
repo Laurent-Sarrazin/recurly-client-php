@@ -81,7 +81,6 @@ abstract class Recurly_Pager extends Recurly_Base implements Iterator
     return (isset($this->_objects[$this->_position]) || isset($this->_links['next']));
   }
 
-
   /**
    * Load another page of results into this pager.
    */
@@ -104,14 +103,14 @@ abstract class Recurly_Pager extends Recurly_Base implements Iterator
     $this->_loadLinks($response);
     $this->_loadObjects($response);
   }
-  
+
   protected static function _setState($params, $state) {
     if (is_null($params))
       $params = array();
     $params['state'] = $state;
     return $params;
   }
-  
+
   /**
    * The 'Links' header contains links to the next, previous, and starting pages.
    * This parses the links header into an array of links if the header is present.
