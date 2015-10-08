@@ -65,7 +65,7 @@ class Recurly_Coupon extends Recurly_Resource
     $response = $this->_client->request(Recurly_Client::POST, $this->uri() . '/generate', $this->renderXML($doc));
     $response->assertValidResponse();
 
-    return new Recurly_UniqueCouponList($response->headers['Location'], $this->_client);
+    return Recurly_UniqueCouponList::createFromUri($response->headers['Location'], $this->_client);
   }
 
   protected function uri() {

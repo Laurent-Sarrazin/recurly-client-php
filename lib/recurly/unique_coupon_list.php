@@ -2,9 +2,14 @@
 
 class Recurly_UniqueCouponList extends Recurly_Pager
 {
-  public static function get($params = null, $client = null) {
-    $list = new Recurly_UniqueCouponList(Recurly_Client::PATH_UNIQUE_COUPONS, $client);
-    $list->_loadFrom(Recurly_Client::PATH_UNIQUE_COUPONS, $params);
+  public static function createFromUri($uri, $client) {
+    $path = str_replace('/v2', '', parse_url($uri, PHP_URL_PATH));
+    $query = parse_url($uri, PHP_URL_QUERY);
+    $params = parse_str($query);
+
+    $list = new Recurly_UniqueCouponList(null, $client);
+    $list->_loadFrom($path, $params);
+
     return $list;
   }
 
